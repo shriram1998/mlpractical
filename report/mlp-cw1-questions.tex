@@ -9,7 +9,7 @@
 %
 % You can generally delete the placeholder text, such as for example the text "Question Figure 2 - Replace the images ..." 
 %
-% There are 19 TEXT QUESTIONS (a few of the short first ones have their answers added to both the Introduction and the Abstract). Replace the text inside the brackets of the command \youranswer with your answer to the question.
+% There are 18 TEXT QUESTIONS (a few of the short first ones have their answers added to both the Introduction and the Abstract). Replace the text inside the brackets of the command \youranswer with your answer to the question.
 %
 % There are also 3 "questions" to replace some placeholder FIGURES with your own, and 3 "questions" asking you to fill in the missing entries in the TABLES provided. 
 %
@@ -24,7 +24,7 @@
 
 %% Question 1:
 \newcommand{\questionOne} {
-\youranswer{Question 1 - Define overfitting}
+\youranswer{Question 1 - Summarise why overfitting is a problem}
 }
 
 %% Question 2:
@@ -44,12 +44,12 @@
 
 %% Question 5:
 \newcommand{\questionFive} {
-\youranswer{Question 5 - Explain what overfitting is in detail and in your own words}
+\youranswer{Question 5 - Explain in detail, and in your own words, why overfitting is a problem}
 }
 
 %% Question 6:
 \newcommand{\questionSix} {
-\youranswer{Question 6 - Discuss ``why'' and ``how'' overfitting occurs, and ``how'' one can identify it is happening}
+\youranswer{Question 6 - Explain the relevance of "network capacity" to overfitting}
 }
 
 %% Question 7:
@@ -84,39 +84,33 @@
 
 %% Question 13:
 \newcommand{\questionThirteen} {
-\youranswer{Question 13 - Explain L1/L2 weight penalties first in words and then with formulas. Explain how they are incorporated to training and what hyperparameter(s) they require}
+\youranswer{Question 13 - Explain how one could use a combination of L1 and L2 regularization. Discuss any potential benefits of this approach}
 }
 
 %% Question 14:
 \newcommand{\questionFourteen} {
-\youranswer{Question 14 - Discuss how/why the weight penalties may address overfitting, discuss how L1 and L2 regularization differ and support your claims with references where possible}
+\youranswer{Question 14 - Explain the experimental details (e.g. hyperparameters), discuss the results in terms of their generalization performance and overfitting. Select and test the best performing model as part of this analysis}
 }
 
 %% Question 15:
 \newcommand{\questionFifteen} {
-\youranswer{Question 15 - Explain the experimental details (e.g. hyperparameters), discuss the results in terms of their generalization performance and overfitting}
+\youranswer{Question 15 - Assume you were able to run 8 further experiments where you could combine Dropout and L1, and/or Dropout and L2 regularization. Which 8 runs would you pick and what question(s) would you aim to answer? Make sure you define the experiment setup, including any relevant hyperparameters}
 }
 
 %% Question 16:
 \newcommand{\questionSixteen} {
-\youranswer{Question 16 - Explain the motivation behind Maxout Networks as presented in \cite{goodfellow2013maxout}}
+\youranswer{Question 16 - Explain, in your own words, why the equivalence between L2 weight penalty and weight decay in Adam optimizer requires a more complex relation; a preconditioner matrix $\bm{M}_t$ rather than a scalar relation}
 }
 
 %% Question 17:
 \newcommand{\questionSeventeen} {
-\youranswer{Question 17 - State whether Dropout is compatible (can be used together) with Maxout and explain why}
+\youranswer{Question 17 - Based on \textbf{Algorithm 2} in \cite{loshchilov2019decoupled}, discuss whether your code with L2 Weight Penalty in the MLP library implements ``Adam with L2 regularization'', ``Adam with decoupled weight decay (AdamW)'' or another variation. Refer to the MLP code, pointing to the specific files and functions to justify your answer}
 }
 
 %% Question 18:
 \newcommand{\questionEighteen} {
-\youranswer{Question 18 - Give an overview of the experiment setup in \cite{goodfellow2013maxout} and analyse it from the point of view of how convincing their conclusions are}
+\youranswer{Question 18 - Briefly draw your conclusions based on the results from the previous sections (what are the take-away messages?) and conclude your report with a recommendation for future directions}
 }
-
-%% Question 19:
-\newcommand{\questionNineteen} {
-\youranswer{Question 19 - Briefly draw your conclusions based on the results from the previous sections (what are the take-away messages?) and conclude your report with a recommendation for future directions}
-}
-
 
 %% - - - - - - - - - - - - FIGURES - - - - - - - - - - - - 
 
@@ -168,28 +162,22 @@
 
 %% Question Figure 4:
 \newcommand{\questionFigureFour} {
-\youranswer{Question Figure 4 - Replace these images with figures depicting the Validation Accuracy and Generalisation Gap for each of your experiments varying the Dropout inclusion rate, L1/L2 weight penalty, and for the 8 combined experiments (you will have to find a way to best display this information in one subfigure).
+\youranswer{Question Figure 4 - Replace these images with figures depicting the Validation Accuracy and Generalisation Gap (difference between validation and training error) for each of the experiment results varying the Dropout inclusion rate, and L1/L2 weight penalty depicted in Figure 3 (including any results you have filled in).
 %
 \begin{figure*}[t]
     \centering
-    \begin{subfigure}{.3\linewidth}
+    \begin{subfigure}{.475\linewidth}
         \includegraphics[width=\linewidth]{figures/empty_dropout_plot.png}
-        \caption{Metrics by inclusion rate}
+        \caption{Accuracy and error by inclusion probability.}
         \label{fig:dropoutrates}
     \end{subfigure} 
-    \begin{subfigure}{.3\linewidth}
+    \begin{subfigure}{.475\linewidth}
         \centering
         \includegraphics[width=\linewidth]{figures/empty_wd_plot.png}
-        \caption{Metrics by weight penalty}
+        \caption{Accuracy and error by weight penalty.}
         \label{fig:weightrates}
     \end{subfigure} 
-    \begin{subfigure}{.3\linewidth}
-        \centering
-        \includegraphics[width=.85\linewidth]{example-image-duck}
-        \caption{Extra experiments}
-        \label{fig:extra}
-    \end{subfigure} 
-    \caption{Hyperparameter search for every method and combinations}
+    \caption{Accuracy and error by regularization strength of each method (Dropout and L1/L2 Regularization).}
     \label{fig:hp_search}
 \end{figure*}
 }
@@ -204,16 +192,16 @@ Question Table 1 - Fill in Table 1 with the results from your experiments varyin
 %
 \begin{table}[t]
     \centering
-    \begin{tabular}{c|cc}
+    \begin{tabular}{c|ccc}
     \toprule
-        \# hidden units & val. acc. & generalization gap \\
+        \# Hidden Units & Val. Acc. & Train Error & Val. Error\\
     \midrule
-         32            &            &                    \\
-         64            &            &                    \\
-         128           &            &                    \\ 
+         32            &    --.-   &  -.--- &   -.---            \\
+         64            &    --.-   &  -.---  &   -.---               \\
+         128           &    --.-   &  -.---  &   -.---           \\ 
     \bottomrule
     \end{tabular}
-    \caption{Validation accuracy (\%) and generalization gap (in terms of cross-entropy error) for varying network widths on the EMNIST dataset.}
+    \caption{Validation accuracy (\%) and training/validation error (in terms of cross-entropy error) for varying network widths on the EMNIST dataset.}
     \label{tab:width_exp}
 \end{table}
 }
@@ -226,16 +214,16 @@ Question Table 2 - Fill in Table 2 with the results from your experiments varyin
 %
 \begin{table}[t]
     \centering
-    \begin{tabular}{c|cc}
+    \begin{tabular}{c|ccc}
     \toprule
-        \# hidden layers & val. acc. & generalization gap \\
+        \# Hidden Layers & Val. Acc. & Train Error & Val. Error \\
     \midrule
-         1               &            &                    \\
-         2               &            &                    \\
-         3               &            &                    \\ 
+         1               &      --.-      &   -.--- & -.---                \\
+         2               &    --.-       &  -.--- & -.---                 \\
+         3               &      --.-      &   -.--- & -.---                \\ 
     \bottomrule
     \end{tabular}
-    \caption{Validation accuracy (\%) and generalization gap (in terms of cross-entropy error) for varying network depths on the EMNIST dataset.}
+    \caption{Validation accuracy (\%) and training/validation error (in terms of cross-entropy error) for varying network depths on the EMNIST dataset.}
     \label{tab:depth_exps}
 \end{table}
 }
@@ -244,42 +232,37 @@ Question Table 2 - Fill in Table 2 with the results from your experiments varyin
 %% Question Table 3:
 \newcommand{\questionTableThree} {
 \youranswer{
-Question Table 3 - Fill in Table 3 with the results from your experiments varying the hyperparameter values for each of L1 regularisation, L2 regularisation, and Dropout (use the values shown on the table) as well as the results for your experiments combining L1/L2 and Dropout (you will have to pick what combinations of hyperparameter values to test for the combined experiments; each of the combined experiments will need to use Dropout and either L1 or L2 regularisation; run an experiment for each of 8 different combinations). Use \textit{italics} to print the best result per criterion for each set of experiments, and \textbf{bold} for the overall best result per criterion.
+Question Table 3 - Fill in Table 3 with the results from your experiments for the missing hyperparameter values for each of L1 regularisation, L2 regularisation, and Dropout (use the values shown on the table).
 %
 \begin{table*}[t]
     \centering
-    \begin{tabular}{c|c|cc}
+    \begin{tabular}{c|c|ccc}
     \toprule
-        Model    &  Hyperparameter value(s) & Validation accuracy & Generalization gap \\
+        Model    &  Hyperparameter value(s) & Validation accuracy & Train Error & Validation Error \\
     \midrule
     \midrule
-        Baseline &  -                    &               0.836 &                 0.290 \\
+        Baseline &  -                    &               0.837 &       0.241 &  0.533          \\
     \midrule
-        \multirow{3}*{Dropout}
-                 & 0.7                   &                     &                   \\
-                 & 0.9                   &                     &                   \\
-                 & 0.95                  &                     &                   \\
+        \multirow{4}*{Dropout}
+                 & 0.6                   &  80.7                &      0.549 & 0.593     \\
+                 & 0.7 & --.- & -.--- & -.---  \\
+                 & 0.85 & 85.1 &  0.329 &  0.434 \\
+                 & 0.97 & 85.4 &  0.244 & 0.457  \\
     \midrule
-        \multirow{3}*{L1 penalty}
-                 & 1e-4                   &                     &                   \\
-                 & 1e-3                   &                     &                   \\
-                 & 1e-1                   &                     &                   \\
+        \multirow{4}*{L1 penalty}
+                 & 5e-4 & 79.5 & 0.642 & 0.658 \\
+                 & 1e-3 & --.- & -.--- & -.--- \\
+                 & 5e-3 & 2.41 & 3.850 & 3.850 \\
+                 & 5e-2 & 2.20 & 3.850 & 3.850 \\
     \midrule
-        \multirow{3}*{L2 penalty}  
-                 & 1e-4                   &                     &                   \\
-                 & 1e-3                   &                     &                   \\
-                 & 1e-1                   &                     &                   \\
-    \midrule
-        \multirow{6}*{Combined}  
-                 & for example 0.95, L1 1e-6  &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
+        \multirow{4}*{L2 penalty}  
+                 & 5e-4 & 85.1 & 0.306 & 0.460 \\
+                 & 1e-3 & --.- & -.--- & -.--- \\
+                 & 5e-3 & 81.3 & 0.586 & 0.607 \\
+                 & 5e-2 & 39.2 & 2.258 & 2.256  \\      
     \bottomrule
     \end{tabular}
-    \caption{Results of all hyperparameter search experiments. \emph{italics} indicate the best results per series and \textbf{bold} indicate the best overall}
+    \caption{Results of all hyperparameter search experiments. \emph{italics} indicate the best results per series (Dropout, L1 Regularization, L2 Regularization) and \textbf{bold} indicates the best overall.}
     \label{tab:hp_search}
 \end{table*}
 }

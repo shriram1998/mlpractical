@@ -1,15 +1,17 @@
-%% Template for MLP Coursework 1 / 19 October 2021 
+%% Template for MLP Coursework 1 / 16 October 2022 
 
 %% Based on  LaTeX template for ICML 2017 - example_paper.tex at 
 %%  https://2017.icml.cc/Conferences/2017/StyleAuthorInstructions
 
 \documentclass{article}
-\input{mlp2021_includes}
+\input{mlp2022_includes}
 
 
 \definecolor{red}{rgb}{0.95,0.4,0.4}
 \definecolor{blue}{rgb}{0.4,0.4,0.95}
 \definecolor{orange}{rgb}{1, 0.65, 0}
+
+\newcommand{\hb}[1]{ {\color{blue} [#1] }}
 
 \newcommand{\youranswer}[1]{{\color{red} \bf[#1]}} %your answer: 
 
@@ -32,29 +34,31 @@
 \vskip 7mm
 ]
 
+
 \begin{abstract} 
-In this report we study the problem of overfitting, which is \questionOne.
+In this report we study the problem of overfitting, which is the training regime where performance increases on the training set but decrease on validation data. \questionOne.
 We first analyse the given example and discuss the probable causes of the underlying problem. 
-Then we investigate how the depth and width of a neural network
-can affect overfitting in a feedforward architecture and observe that increasing width and depth \questionTwo.
+Then we investigate how the depth and width of a neural network can affect overfitting in a feedforward architecture and observe that increasing width and depth \questionTwo.
 Next we discuss why two standard methods, Dropout and Weight Penalty, can
 mitigate overfitting, then describe their implementation and use them in our experiments
 to reduce the overfitting on the EMNIST dataset. 
 Based on our results, we ultimately find that \questionThree.
-Finally, we briefly review another method, Maxout, discuss its strengths and weaknesses, and conclude the report with our observations and future work. Our main findings indicate that \questionFour.
+Finally, we briefly review a technique that studies use of weight decay in adaptive gradient algorithms, discuss its findings, and conclude the report with our observations and future work. 
+Our main findings indicate that \questionFour.
 \end{abstract} 
+
 
 \section{Introduction}
 \label{sec:intro}
-In this report we focus on a common and important problem while training machine learning models known as overfitting, or overtraining, which is \questionOne.
+In this report we focus on a common and important problem while training machine learning models known as overfitting, or overtraining, which is the training regime where performances increase on the training set but decrease on unseen data.
 We first start with analyzing the given problem in Fig.~\ref{fig:example}, study it in different architectures and then investigate different strategies to mitigate the problem.
-In particular, Section \ref{sec:task1} identifies and discusses the given problem, and investigates the effect of network width and depth in terms of generalization gap (see Ch.~5 in \citealt{Goodfellow-et-al-2016}) and generalization performance.
+In particular, Section~\ref{sec:task1} identifies and discusses the given problem, and investigates the effect of network width and depth in terms of generalization gap (see Ch.~5 in \citealt{Goodfellow-et-al-2016}) and generalization performance.
 Section \ref{sec:task2.1} introduces two regularization techniques to alleviate overfitting: Dropout \cite{srivastava2014dropout} and L1/L2 Weight Penalties (see Section~7.1 in \citealt{Goodfellow-et-al-2016}). 
 We first explain them in detail and discuss why they are used for alleviating overfitting.
-In Section~\ref{sec:task2.2} we incorporate each of them and their various combinations to a three hidden layer neural network, train it on the EMNIST dataset, which contains 131,600 images of characters and digits, each of size 28x28 which are split into 47 classes, grouping together some difficult to distinguish characters.
+In Section~\ref{sec:task2.2}, we incorporate each of them and their various combinations to a three hidden layer\footnote{We denote all layers as hidden except the final (output) one. This means that depth of a network is equal to the number of its hidden layers + 1.} neural network, train it on the EMNIST dataset, which contains 131,600 images of characters and digits, each of size 28x28, from 47 classes.
 We evaluate them in terms of generalization gap and performance, and discuss the results and effectiveness of the tested regularization strategies.
 Our results show that \questionThree.
-In Section~\ref{sec:task3}, we discuss a related work on Maxout Networks and highlight its pros and cons.\footnote{Instructor note: Omitting this for this coursework, but normally you would be more specific and summarise your conclusions about that review here as well.}
+In Section~\ref{sec:task3}, we study a related work that studies weight decay in adaptive gradient algorithms.\footnote{Instructor note: Omitting this for this coursework, but normally you would be more specific and summarise your conclusions about that review here as well.}
 Finally, we conclude our study in section \ref{sec:concl}, noting that \questionFour.
 
 
@@ -64,13 +68,13 @@ Finally, we conclude our study in section \ref{sec:concl}, noting that \question
 \begin{figure}[t]
     \centering
     \begin{subfigure}{\linewidth}
-        \includegraphics[width=\linewidth]{figures/example_accuracy.pdf}
+        \includegraphics[width=\linewidth]{figures/fig1_acc.png}
         \caption{accuracy by epoch}
         \label{fig:example_acccurves}
     \end{subfigure} 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/example_error.pdf}
+        \includegraphics[width=\linewidth]{figures/fig1_err.png}
         \caption{error by epoch}
         \label{fig:example_errorcurves}
     \end{subfigure} 
@@ -79,19 +83,27 @@ Finally, we conclude our study in section \ref{sec:concl}, noting that \question
 \end{figure} 
 
 Overfitting to training data is a very common and important issue that needs to be dealt with when training neural networks or other machine learning models in general (see Ch.~5 in \citealt{Goodfellow-et-al-2016}).
-A model is said to be overfitting when \questionFive.
+A model is said to be overfitting when as the training progresses, its performance on the training data keeps improving, while its is degrading on validation data. 
+Effectively, the model stops learning related patterns for the task and instead starts to memorize specificities of each training sample that are irrelevant to new samples.
+
+\questionFive.
+
+Although it eventually happens to all gradient-based training, it is most often caused by models that are too large with respect to the amount and diversity of training data. The more free parameters the model has, the easier it will be to memorize complex data patterns that only apply to a restricted amount of samples.
+A prominent symptom of overfitting is the generalization gap, defined as the difference between the validation and training error. 
+A steady increase in this quantity is usually interpreted as the model entering the overfitting regime.
 
 \questionSix.
 
 Fig.~\ref{fig:example_acccurves} and \ref{fig:example_errorcurves} show a prototypical example of overfitting.
-We see in Figure~\ref{fig:example_acccurves} that \questionSeven.
+We see in Fig.~\ref{fig:example_acccurves} that \questionSeven.
 
 The extent to which our model overfits depends on many factors.
 For example, the quality and quantity of the training set and
-the complexity of the model. If we have a lot of varied training samples,
-or if our model is relatively shallow, it will in general
-be less prone to overfitting. Any form of regularisation
-will also limit the extent to which the model overfits.
+the complexity of the model. 
+If we have sufficiently many diverse training samples,
+or if our model contains few hidden units, it will in general
+be less prone to overfitting. 
+Any form of regularisation will also limit the extent to which the model overfits.
 
 
 \subsection{Network width}
@@ -99,21 +111,14 @@ will also limit the extent to which the model overfits.
 \questionTableOne
 \questionFigureTwo
 
-
-First we investigate the effect of increasing the number of
-hidden units in a single hidden layer network when training
-on the EMNIST dataset.
+First we investigate the effect of increasing the number of hidden units in a single hidden layer network when training on the EMNIST dataset.
 The network is trained using the Adam optimizer
-with a learning rate of $10^{-3}$ and a batch size of 100, for a total of 100 epochs.
+with a learning rate of $9 \times 10^{-4}$ and a batch size of 100, for a total of 100 epochs.
 
-
-The input layer is of size 784, and output layer consists
-of 47 units. 
-Three different models were trained, with a
-single hidden layer of 32, 64 and 128 ReLU hidden units
-respectively.
-Figure~\ref{fig:width} depicts the error and accuracy curves over 100 epochs for the model with varying number of hidden units.
-Table~\ref{tab:width_exp} reports the final accuracy and generalization gap.
+The input layer is of size 784, and output layer consists of 47 units. 
+Three different models were trained, with a single hidden layer of 32, 64 and 128 ReLU hidden units respectively.
+Fig.~\ref{fig:width} depicts the error and accuracy curves over 100 epochs for the model with varying number of hidden units.
+Table~\ref{tab:width_exp} reports the final accuracy, training error, and validation error.
 We observe that \questionEight.
 
 \questionNine.
@@ -124,14 +129,9 @@ We observe that \questionEight.
 \questionTableTwo
 \questionFigureThree
 
-Next we investigate the effect of varying the number of hidden
-layers in the network. 
-Table~\ref{tab:depth_exps} and Fig.~\ref{fig:depth} shows the results from
-training three models with one, two and three hidden layers respectively,
-each with 128 ReLU hidden units. 
-As with previous experiments, they are 
-trained with the Adam optimizer with a learning rate of  $10^{-3}$ and 
-a batch size of 100. 
+Next we investigate the effect of varying the number of hidden layers in the network. 
+Table~\ref{tab:depth_exps} and Fig.~\ref{fig:depth} depict results from training three models with one, two and three hidden layers respectively, each with 128 ReLU hidden units. 
+As with previous experiments, they are trained with the Adam optimizer with a learning rate of $9 \times 10^{-4}$ and a batch size of 100. 
 
 We observe that \questionTen.
 
@@ -140,78 +140,61 @@ We observe that \questionTen.
 \questionTwelve.
 
 
-
-
-
 \section{Dropout and Weight Penalty}
 \label{sec:task2.1} 
 
-In this section, we investigate three regularization methods to 
-alleviate the overfitting problem, specifically dropout layers 
-and the L1 and L2 weight penalties.
+In this section, we investigate three regularization methods to alleviate the overfitting problem, specifically dropout layers and the L1 and L2 weight penalties.
+
 
 \subsection{Dropout}
 
-Dropout~\cite{srivastava2014dropout}
-is a stochastic method that randomly inactivates
-neurons in a neural network according to an hyperparameter, the
-inclusion rate. Dropout is commonly represented by an 
-additional layer inserted between the linear layer and 
-activation function.
-Its forward propagation during training is defined as follows:
-
+Dropout~\cite{srivastava2014dropout} is a stochastic method that randomly inactivates neurons in a neural network according to an hyperparameter, the inclusion rate  (\textit{i.e.} the rate that an unit is included).
+Dropout is commonly represented by an additional layer inserted between the linear layer and activation function.
+Its forward pass during training is defined as follows:
 \begin{align}
-    mask &\sim bernoulli(p)\\
-    y' &= mask \odot y\
+    \text{mask} &\sim \text{bernoulli}(p)\\
+    \bm{y}' &= \text{mask} \odot \bm{y}\
+\end{align}
+where $\bm{y}, \bm{y}' \in \mathbb{R}^d$ are the output of the linear layer before and after applying dropout, respectively. 
+$\text{mask} \in \mathbb{R}^d$ is a mask vector randomly sampled from the Bernoulli distribution with inclusion probability $p$, and $\odot$ denotes the element-wise multiplication.
+
+At inference time, stochasticity is not desired, so no neurons are dropped. 
+To account for the change in expectations of the output values, we scale them down by the inclusion probability $p$:
+\begin{align}
+    \bm{y}' &= \bm{y}*p\
 \end{align}
 
-where $y, y' \in \mathbb{R}^d$ are the output of the linear layer 
-before and after applying dropout, 
-respectively. $mask \in \mathbb{R}^d$ is a mask vector randomly sampled from the
-Bernoulli distribution with parameter of inclusion probability
-$p$, and $\odot$ denotes the element-wise multiplication.
-
-At inference time, stochasticity is not desired, so no neurons
-are dropped. To account for the change in expectations of the
-output values, we scale them down by the inclusion rate
-$p$:
-
+As there is no nonlinear calculation involved, the backward propagation is just the element-wise product of the gradients with respect to the layer outputs and mask created in the forward calculation. 
+The backward propagation for dropout is therefore formulated as follows:
 \begin{align}
-    y' &= y*p\
+    \frac{\partial \bm{y}'}{\partial \bm{y}} = mask
 \end{align}
 
-As there is no nonlinear calculation involved, the backward
-propagation is just the element-wise product of the gradients
-with respect to the layer outputs and mask created
-in the forward calculation. The backward propagation for
-dropout is therefore formulated as follows:
-
-\begin{align}
-    \frac{\partial y'}{\partial y} = mask
-\end{align}
-
-Dropout is an easy to implement and highly scalable
-method. It can be implemented as a layer-based calculation
-unit, and be placed on any layer of the neural network at
-will. Dropout can reduce the dependence of hidden features
-between layers so that the neurons of the next layer will not
-specifically depend on some features from of the previous layer.
-Instead, it force the network to evenly distribute information
-among all features. By randomly dropping some neurons in training,
-dropout makes use of a subset of the whole architecture, so it can 
-also be viewed as bagging different sub networks and averaging their
-outputs.
-
+Dropout is an easy to implement and highly scalable method. 
+It can be implemented as a layer-based calculation unit, and be placed on any layer of the neural network at will. 
+Dropout can reduce the dependence of hidden units between layers so that the neurons of the next layer will not rely on only few features from of the previous layer.
+Instead, it forces the network to extract diverse features and evenly distribute information among all features. 
+By randomly dropping some neurons in training, dropout makes use of a subset of the whole architecture, so it can also be viewed as bagging different sub networks and averaging their outputs.
 
 
 \subsection{Weight penalty}
 
-L1 and L2 regularization~\cite{ng2004feature} are simple but effective
-methods to mitigate overfitting to training data.
+L1 and L2 regularization~\cite{ng2004feature} are simple but effective methods to mitigate overfitting to training data. 
+The application of L1 and L2 regularization strategies could be formulated as adding penalty terms with L1 and L2 norm square of weights in the cost function without changing other formulations. 
+The idea behind this regularization method is to penalize the weights by adding a term to the cost function, and explicitly constrain the magnitude of the weights with either the L1 and L2 norms.
+The optimization problem takes a different form:
+\begin{align}
+    \text{L1: } & \text{min}_{\bm{w}} \; E_{\text{data}}(\bm{X}, \bm{y}, \bm{w}) + \lambda ||w||_1\\
+    \text{L2: } & \text{min}_{\bm{w}} \; E_{\text{data}}(\bm{X}, \bm{y}, \bm{w}) + \lambda ||w||^2_2
+\end{align}
+where $E_{\text{data}}$ denotes the cross entropy error function, and $\{\bm{X}, \bm{y}\}$ denotes the input and target training pairs. 
+$\lambda$ controls the strength of regularization.
+
+Weight penalty works by constraining the scale of parameters and preventing them to grow too much, avoiding overly sensitive behavior on unseen data.
+While L1 and L2 regularization are similar to each other in calculation, they have different effects.
+Gradient magnitude in L1 regularization does not depend on the weight value and tends to bring small weights to 0, which can be used as a form of feature selection, whereas L2 regularization tends to shrink the weights to a smaller scale uniformly. 
+
 \questionThirteen.
-
-\questionFourteen.
-
 
 
 \section{Balanced EMNIST Experiments}
@@ -223,74 +206,43 @@ methods to mitigate overfitting to training data.
 \label{sec:task2.2}
 
 Here we evaluate the effectiveness of the given regularization methods for reducing the overfitting on the EMNIST dataset.
-We build a baseline architecture with three hidden layers, each with 128 neurons, which suffers from overfitting in EMNIST as shown in section \ref{sec:task1}.
+We build a baseline architecture with three hidden layers, each with 128 neurons, which suffers from overfitting as shown in section \ref{sec:task1}.
 
-We start by lowering the learning rate to $10^{-4}$, as the previous runs were overfitting in only a handful of epochs. Results for the new baseline (c.f. Table~\ref{tab:hp_search}) confirm that lowering learning rate helps, so all further experiments are run using it.
+Here we train the network with a lower learning rate of $10^{-4}$, as the previous runs were overfitting after only a handful of epochs. 
+Results for the new baseline (c.f. Table~\ref{tab:hp_search}) confirm that lower learning rate helps, so all further experiments are run using it.
 
-%We follow the previous training settings where we deliberately let the baseline overfit on the training set as in previous experiments. 
-%These settings ensure the fairness of the evaluation of three methods to alleviate overfitting. 
 Then, we apply the L1 or L2 regularization with dropout to our baseline and search for good hyperparameters on the validation set. 
-We summarize all
-the experimental results in Table~\ref{tab:hp_search}. For each method, we
-plot the relationship between generalisation gap and validation accuracy in Figure~\ref{fig:hp_search}.
+We summarize all the experimental results in Table~\ref{tab:hp_search}. For each method, we plot the relationship between generalisation gap and validation accuracy in Figure~\ref{fig:hp_search}.
 
 First we analyze three methods separately, train each over a set of hyperparameters and compare their best performing results.
+
+\questionFourteen.
 
 \questionFifteen.
 
 
-\section{Literature Review: Maxout Networks}
+\section{Literature Review: Decoupled Weight Decay Regularization}
 \label{sec:task3}
 
-\paragraph{Summary of Maxout Networks} In this section, we
-briefly discuss another generalization method: Maxout net-
-works \cite{goodfellow2013maxout}. This paper further ex-
-plores the dropout method and proposes a new "maxout" layer
- which can complement dropout.
-The authors evaluate the performance of Maxout Networks
-in four standard datasets, namely MNIST, CIFAR-10
-and 100, and SVHN. They point out that although
-dropout has been widely applied in deep models, \questionSixteen. Following this 
-motivation, they propose the Maxout activation layers. These can be considered learnable activations that work as a universal convex function approximator. The Maxout layer first
-maps the hidden space to $k$ subspaces through independent
-affine transformations, then, for each element in output
-vectors, it takes the maximum value across all subspaces.
+\paragraph{Summary}
+In this section, we briefly study a method~\cite{loshchilov2019decoupled} that  decouples the weight penalty from the weight update.
+The authors shed light onto the relation between weight decay and L2 weight penalty for SGD and Adam optimizers, pointing out that weight decay and L2 weight penalty are not equivalent when used with the Adam optimizer.
+
+In particular, the authors claim that SGD with L2 weight penalty and weight decay are equivalent when their coefficients have the relation $\lambda'=\frac{\lambda}{2}$ (see their \textbf{Proposal 1}), which they prove with Equations~(5) and (6) (proof is in their Appendix A).
+In addition, they claim that such a simple scalar relation does not hold in Adam optimization (see \textbf{Proposal 2}) and show, in their Appendix A, that the necessary relation for equivalence requires use of a preconditioner matrix $\bm{M}_t$.
+This requirement can be explained with the fact that \questionSixteen.
 
 \questionSeventeen.
 
-\paragraph{Strengths and limitations} The author proposed a novel
-neural activation unit that further exploits the dropout technique.
-\questionEighteen.
-
-Although the Maxout activation units can maximize
-the averaging effect of dropout in a deep architecture,
-we can argue that the Maxout computation
-is expensive. The advantage of dropout lies in its high 
-scalability and computational advantages. It can be arbitrarily
-applied to various network structures, and the calculation
-speed is fast, which is very suitable for heavy computing 
-algorithms such as training and inference of neural networks.
-In comparison, the design of the Maxout network needs to project the
-hidden vector into $k$ subspaces. Both the forward algorithm and the
-backward algorithm of dropout can be calculated in $\mathcal{O}(D)$
-complexity, but the complexity of Maxout is $\mathcal{O}(kD)$.
-This can lead to increasing the number of training epochs needed
-to reach convergence. 
-Furthermore, the universal approximation property of Maxout seems
-powerful, but it would be interesting to verify that it is useful
-in practice. Specifically, we can design an experiment where we 
-increase the number of subspaces $k$ and see where performances stop
-improving. In extreme cases, it is even possible that the 
-function learned is too specific to the training data, effectively
-causing overfitting.
-
+Finally the authors validate their findings and proposed decoupled optimization strategies in various learning rate schedules, initial learning rates, network architectures and datasets. \footnote{Instructor note: Omitting this for this coursework, but normally you would give an evaluation of the experiment setup in \cite{loshchilov2019decoupled} here.}
 
 
 \section{Conclusion}
 \label{sec:concl}
     
-\questionNineteen.
+\questionEighteen.
 
+\newpage
 \bibliography{refs}
 
 \end{document} 
