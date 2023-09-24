@@ -125,6 +125,12 @@ conda install numpy scipy matplotlib jupyter
 
 Again you will be given a list of the packages to be installed and asked to confirm whether to proceed. Enter `y` then wait for the packages to install (this should take around five minutes). In addition to Jupyter, NumPy and SciPy which we have already mentioned, we are also installing [matplotlib](http://matplotlib.org/) a plotting and visualisation library.
 
+Install PyTorch. The command below installs the CPU-only version of PyTorch. If you have access to a CUDA-enabled GPU and wish to install the GPU version of PyTorch instead, replace `cpuonly -c pytorch` with your CUDA version reference, e.g. for CUDA 11.7 use `pytorch-cuda=11.7 -c pytorch -c nvidia` in the command below. For more information see [here](https://pytorch.org/get-started/locally/).
+
+```
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
+```
+
 Once the installation is finished, to recover some disk space we can clear the package tarballs Conda just downloaded:
 
 ```
@@ -415,6 +421,12 @@ Install the dependencies for the course into the new environment:
 
 ```
 conda install numpy scipy matplotlib jupyter
+```
+
+Install PyTorch. The command below installs the CPU-only version of PyTorch. If you have access to a CUDA-enabled GPU and wish to install the GPU version of PyTorch instead, replace `cpuonly -c pytorch` with your CUDA version reference, e.g. for CUDA 11.7 use `pytorch-cuda=11.7 -c pytorch -c nvidia` in the command below. For more information see [here](https://pytorch.org/get-started/locally/).
+
+```
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
 ```
 
 Clear the package tarballs Conda just downloaded:
