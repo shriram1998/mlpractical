@@ -59,5 +59,8 @@ docs/_build/
 # PyBuilder
 target/
 
-#Notebook stuff
+# Notebook stuff
 notebooks/.ipynb_checkpoints/
+
+# Data folder
+data/
