@@ -63,6 +63,8 @@ target/
 # Pycharm
 .idea/*
 
-
-#Notebook stuff
+# Notebook stuff
 notebooks/.ipynb_checkpoints/
+
+# Data folder
+data/
