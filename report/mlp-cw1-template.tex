@@ -11,8 +11,6 @@
 \definecolor{blue}{rgb}{0.4,0.4,0.95}
 \definecolor{orange}{rgb}{1, 0.65, 0}
 
-\newcommand{\hb}[1]{ {\color{blue} [#1] }}
-
 \newcommand{\youranswer}[1]{{\color{red} \bf[#1]}} %your answer: 
 
 
@@ -39,11 +37,11 @@
 In this report we study the problem of overfitting, which is the training regime where performance increases on the training set but decrease on validation data. \questionOne.
 We first analyse the given example and discuss the probable causes of the underlying problem. 
 Then we investigate how the depth and width of a neural network can affect overfitting in a feedforward architecture and observe that increasing width and depth \questionTwo.
-Next we discuss why two standard methods, Dropout and Weight Penalty, can
+Next we discuss how two standard methods, Dropout and Weight Penalty, can
 mitigate overfitting, then describe their implementation and use them in our experiments
 to reduce the overfitting on the EMNIST dataset. 
 Based on our results, we ultimately find that \questionThree.
-Finally, we briefly review a technique that studies use of weight decay in adaptive gradient algorithms, discuss its findings, and conclude the report with our observations and future work. 
+Finally, we conclude the report with our observations and related work. 
 Our main findings indicate that \questionFour.
 \end{abstract} 
 
@@ -51,15 +49,15 @@ Our main findings indicate that \questionFour.
 \section{Introduction}
 \label{sec:intro}
 In this report we focus on a common and important problem while training machine learning models known as overfitting, or overtraining, which is the training regime where performances increase on the training set but decrease on unseen data.
-We first start with analyzing the given problem in Fig.~\ref{fig:example}, study it in different architectures and then investigate different strategies to mitigate the problem.
-In particular, Section~\ref{sec:task1} identifies and discusses the given problem, and investigates the effect of network width and depth in terms of generalization gap (see Ch.~5 in \citealt{Goodfellow-et-al-2016}) and generalization performance.
-Section \ref{sec:task2.1} introduces two regularization techniques to alleviate overfitting: Dropout \cite{srivastava2014dropout} and L1/L2 Weight Penalties (see Section~7.1 in \citealt{Goodfellow-et-al-2016}). 
+We first start with analysing the given problem in Figure~\ref{fig:example}, study it in different architectures and then investigate different strategies to mitigate the problem.
+In particular, Section~\ref{sec:task1} identifies and discusses the given problem, and investigates the effect of network width and depth in terms of generalisation gap (see Ch.~5 in \citealt{Goodfellow-et-al-2016}) and generalisation performance.
+Section \ref{sec:task2.1} introduces two regularisation techniques to alleviate overfitting: Dropout \cite{srivastava2014dropout} and L1/L2 Weight Penalties (see Section~7.1 in \citealt{Goodfellow-et-al-2016}). 
 We first explain them in detail and discuss why they are used for alleviating overfitting.
 In Section~\ref{sec:task2.2}, we incorporate each of them and their various combinations to a three hidden layer\footnote{We denote all layers as hidden except the final (output) one. This means that depth of a network is equal to the number of its hidden layers + 1.} neural network, train it on the EMNIST dataset, which contains 131,600 images of characters and digits, each of size 28x28, from 47 classes.
-We evaluate them in terms of generalization gap and performance, and discuss the results and effectiveness of the tested regularization strategies.
+We evaluate them in terms of generalisation gap and performance, and discuss the results and effectiveness of the tested regularisation strategies.
 Our results show that \questionThree.
-In Section~\ref{sec:task3}, we study a related work that studies weight decay in adaptive gradient algorithms.\footnote{Instructor note: Omitting this for this coursework, but normally you would be more specific and summarise your conclusions about that review here as well.}
-Finally, we conclude our study in section \ref{sec:concl}, noting that \questionFour.
+
+Finally, we conclude our study in Section~\ref{sec:concl}, noting that \questionFour.
 
 
 \section{Problem identification}
@@ -88,21 +86,18 @@ Effectively, the model stops learning related patterns for the task and instead 
 
 \questionFive.
 
-Although it eventually happens to all gradient-based training, it is most often caused by models that are too large with respect to the amount and diversity of training data. The more free parameters the model has, the easier it will be to memorize complex data patterns that only apply to a restricted amount of samples.
-A prominent symptom of overfitting is the generalization gap, defined as the difference between the validation and training error. 
+Although it eventually happens to all gradient-based training, it is most often caused by models that are too large with respect to the amount and diversity of training data. The more free parameters the model has, the easier it will be to memorise complex data patterns that only apply to a restricted amount of samples.
+A prominent symptom of overfitting is the generalisation gap, defined as the difference between the validation and training error. 
 A steady increase in this quantity is usually interpreted as the model entering the overfitting regime.
 
 \questionSix.
 
-Fig.~\ref{fig:example_acccurves} and \ref{fig:example_errorcurves} show a prototypical example of overfitting.
-We see in Fig.~\ref{fig:example_acccurves} that \questionSeven.
+Figure~\ref{fig:example_acccurves} and \ref{fig:example_errorcurves} show a prototypical example of overfitting.
+We see in Figure~\ref{fig:example_acccurves} that \questionSeven.
 
 The extent to which our model overfits depends on many factors.
-For example, the quality and quantity of the training set and
-the complexity of the model. 
-If we have sufficiently many diverse training samples,
-or if our model contains few hidden units, it will in general
-be less prone to overfitting. 
+For example, the quality and quantity of the training set and the complexity of the model. 
+If we have sufficiently many diverse training samples, or if our model contains few hidden units, it will in general be less prone to overfitting. 
 Any form of regularisation will also limit the extent to which the model overfits.
 
 
@@ -112,12 +107,12 @@ Any form of regularisation will also limit the extent to which the model overfit
 \questionFigureTwo
 
 First we investigate the effect of increasing the number of hidden units in a single hidden layer network when training on the EMNIST dataset.
-The network is trained using the Adam optimizer
+The network is trained using the Adam optimiser
 with a learning rate of $9 \times 10^{-4}$ and a batch size of 100, for a total of 100 epochs.
 
 The input layer is of size 784, and output layer consists of 47 units. 
 Three different models were trained, with a single hidden layer of 32, 64 and 128 ReLU hidden units respectively.
-Fig.~\ref{fig:width} depicts the error and accuracy curves over 100 epochs for the model with varying number of hidden units.
+Figure~\ref{fig:width} depicts the error and accuracy curves over 100 epochs for the model with varying number of hidden units.
 Table~\ref{tab:width_exp} reports the final accuracy, training error, and validation error.
 We observe that \questionEight.
 
@@ -130,20 +125,20 @@ We observe that \questionEight.
 \questionFigureThree
 
 Next we investigate the effect of varying the number of hidden layers in the network. 
-Table~\ref{tab:depth_exps} and Fig.~\ref{fig:depth} depict results from training three models with one, two and three hidden layers respectively, each with 128 ReLU hidden units. 
-As with previous experiments, they are trained with the Adam optimizer with a learning rate of $9 \times 10^{-4}$ and a batch size of 100. 
+Table~\ref{tab:depth_exps} and Figure~\ref{fig:depth} depict results from training three models with one, two and three hidden layers respectively, each with 128 ReLU hidden units. 
+As with previous experiments, they are trained with the Adam optimiser with a learning rate of $9 \times 10^{-4}$ and a batch size of 100. 
 
 We observe that \questionTen.
 
 \questionEleven.
 
-\questionTwelve.
+
 
 
 \section{Dropout and Weight Penalty}
 \label{sec:task2.1} 
 
-In this section, we investigate three regularization methods to alleviate the overfitting problem, specifically dropout layers and the L1 and L2 weight penalties.
+In this section, we investigate three regularisation methods to alleviate the overfitting problem, specifically dropout layers and the L1 and L2 weight penalties.
 
 
 \subsection{Dropout}
@@ -179,22 +174,22 @@ By randomly dropping some neurons in training, dropout makes use of a subset of 
 
 \subsection{Weight penalty}
 
-L1 and L2 regularization~\cite{ng2004feature} are simple but effective methods to mitigate overfitting to training data. 
-The application of L1 and L2 regularization strategies could be formulated as adding penalty terms with L1 and L2 norm square of weights in the cost function without changing other formulations. 
-The idea behind this regularization method is to penalize the weights by adding a term to the cost function, and explicitly constrain the magnitude of the weights with either the L1 and L2 norms.
-The optimization problem takes a different form:
+L1 and L2 regularisation~\cite{ng2004feature} are simple but effective methods to mitigate overfitting to training data. 
+The application of L1 and L2 regularisation strategies could be formulated as adding penalty terms with L1 and L2 norm square of weights in the cost function without changing other formulations. 
+The idea behind this regularisation method is to penalise the weights by adding a term to the cost function, and explicitly constrain the magnitude of the weights with either the L1 and L2 norms.
+The optimisation problem takes a different form:
 \begin{align}
     \text{L1: } & \text{min}_{\bm{w}} \; E_{\text{data}}(\bm{X}, \bm{y}, \bm{w}) + \lambda ||w||_1\\
     \text{L2: } & \text{min}_{\bm{w}} \; E_{\text{data}}(\bm{X}, \bm{y}, \bm{w}) + \lambda ||w||^2_2
 \end{align}
 where $E_{\text{data}}$ denotes the cross entropy error function, and $\{\bm{X}, \bm{y}\}$ denotes the input and target training pairs. 
-$\lambda$ controls the strength of regularization.
+$\lambda$ controls the strength of regularisation.
 
-Weight penalty works by constraining the scale of parameters and preventing them to grow too much, avoiding overly sensitive behavior on unseen data.
-While L1 and L2 regularization are similar to each other in calculation, they have different effects.
-Gradient magnitude in L1 regularization does not depend on the weight value and tends to bring small weights to 0, which can be used as a form of feature selection, whereas L2 regularization tends to shrink the weights to a smaller scale uniformly. 
+Weight penalty works by constraining the scale of parameters and preventing them to grow too much, avoiding overly sensitive behaviour on unseen data.
+While L1 and L2 regularisation are similar to each other in calculation, they have different effects.
+Gradient magnitude in L1 regularisation does not depend on the weight value and tends to bring small weights to 0, which can be used as a form of feature selection, whereas L2 regularisation tends to shrink the weights to a smaller scale uniformly. 
 
-\questionThirteen.
+\questionTwelve.
 
 
 \section{Balanced EMNIST Experiments}
@@ -205,42 +200,26 @@ Gradient magnitude in L1 regularization does not depend on the weight value and 
 
 \label{sec:task2.2}
 
-Here we evaluate the effectiveness of the given regularization methods for reducing the overfitting on the EMNIST dataset.
+Here we evaluate the effectiveness of the given regularisation methods for reducing the overfitting on the EMNIST dataset.
 We build a baseline architecture with three hidden layers, each with 128 neurons, which suffers from overfitting as shown in section \ref{sec:task1}.
 
 Here we train the network with a lower learning rate of $10^{-4}$, as the previous runs were overfitting after only a handful of epochs. 
 Results for the new baseline (c.f. Table~\ref{tab:hp_search}) confirm that lower learning rate helps, so all further experiments are run using it.
 
-Then, we apply the L1 or L2 regularization with dropout to our baseline and search for good hyperparameters on the validation set. 
-We summarize all the experimental results in Table~\ref{tab:hp_search}. For each method, we plot the relationship between generalisation gap and validation accuracy in Figure~\ref{fig:hp_search}.
+Then, we apply the L1 or L2 regularisation with dropout to our baseline and search for good hyperparameters on the validation set. 
+We summarise all the experimental results in Table~\ref{tab:hp_search}. For each method, we plot the relationship between generalisation gap and validation accuracy in Figure~\ref{fig:hp_search}.
 
 First we analyze three methods separately, train each over a set of hyperparameters and compare their best performing results.
 
+\questionThirteen.
+
 \questionFourteen.
-
-\questionFifteen.
-
-
-\section{Literature Review: Decoupled Weight Decay Regularization}
-\label{sec:task3}
-
-\paragraph{Summary}
-In this section, we briefly study a method~\cite{loshchilov2019decoupled} that  decouples the weight penalty from the weight update.
-The authors shed light onto the relation between weight decay and L2 weight penalty for SGD and Adam optimizers, pointing out that weight decay and L2 weight penalty are not equivalent when used with the Adam optimizer.
-
-In particular, the authors claim that SGD with L2 weight penalty and weight decay are equivalent when their coefficients have the relation $\lambda'=\frac{\lambda}{2}$ (see their \textbf{Proposal 1}), which they prove with Equations~(5) and (6) (proof is in their Appendix A).
-In addition, they claim that such a simple scalar relation does not hold in Adam optimization (see \textbf{Proposal 2}) and show, in their Appendix A, that the necessary relation for equivalence requires use of a preconditioner matrix $\bm{M}_t$.
-This requirement can be explained with the fact that \questionSixteen.
-
-\questionSeventeen.
-
-Finally the authors validate their findings and proposed decoupled optimization strategies in various learning rate schedules, initial learning rates, network architectures and datasets. \footnote{Instructor note: Omitting this for this coursework, but normally you would give an evaluation of the experiment setup in \cite{loshchilov2019decoupled} here.}
 
 
 \section{Conclusion}
 \label{sec:concl}
     
-\questionEighteen.
+\questionFifteen.
 
 \newpage
 \bibliography{refs}

@@ -59,7 +59,7 @@
 
 %% Question 8:
 \newcommand{\questionEight} {
-\youranswer{Question 8 - Explain your network width experiment results by using the relevant figure and table}
+\youranswer{Question 8 - Present your network width experiment results by using the relevant figure and table}
 }
 
 %% Question 9:
@@ -69,7 +69,7 @@
 
 %% Question 10:
 \newcommand{\questionTen} {
-\youranswer{Question 10 - Explain your network depth experiment results by using the relevant figure and table}
+\youranswer{Question 10 - Present your network depth experiment results by using the relevant figure and table}
 }
 
 %% Question 11:
@@ -77,39 +77,28 @@
 \youranswer{Question 11 - Discuss whether varying depth affects the results in a consistent way, and whether the results are expected and match well with the prior knowledge (by which we mean your expectations as are formed from the relevant Theory and literature)}
 }
 
+
+
 %% Question 12:
 \newcommand{\questionTwelve} {
-\youranswer{Question 12 - Compare and discuss how varying width and height changes the performance and overfitting in your experiments}
+\youranswer{Question 12 - Explain how one could use a combination of L1 and L2 regularisation. Discuss any potential benefits of this approach}
 }
 
 %% Question 13:
 \newcommand{\questionThirteen} {
-\youranswer{Question 13 - Explain how one could use a combination of L1 and L2 regularization. Discuss any potential benefits of this approach}
+\youranswer{Question 13 - Explain the experimental details (e.g. hyperparameters), discuss the results in terms of their generalisation performance and overfitting. Select and test the best performing model as part of this analysis.}
 }
 
 %% Question 14:
 \newcommand{\questionFourteen} {
-\youranswer{Question 14 - Explain the experimental details (e.g. hyperparameters), discuss the results in terms of their generalization performance and overfitting. Select and test the best performing model as part of this analysis}
+\youranswer{Question 14 - Assume you were able to run 8 further experiments (8 specific hyperparameter configurations) where you could combine Dropout and L1, and/or Dropout and L2 regularisation. Which 8 runs would you pick and what question(s) would you aim to answer? Make sure you define the experiment setup, including any relevant hyperparameters}
 }
+
+
 
 %% Question 15:
 \newcommand{\questionFifteen} {
-\youranswer{Question 15 - Assume you were able to run 8 further experiments where you could combine Dropout and L1, and/or Dropout and L2 regularization. Which 8 runs would you pick and what question(s) would you aim to answer? Make sure you define the experiment setup, including any relevant hyperparameters}
-}
-
-%% Question 16:
-\newcommand{\questionSixteen} {
-\youranswer{Question 16 - Explain, in your own words, why the equivalence between L2 weight penalty and weight decay in Adam optimizer requires a more complex relation; a preconditioner matrix $\bm{M}_t$ rather than a scalar relation}
-}
-
-%% Question 17:
-\newcommand{\questionSeventeen} {
-\youranswer{Question 17 - Based on \textbf{Algorithm 2} in \cite{loshchilov2019decoupled}, discuss whether your code with L2 Weight Penalty in the MLP library implements ``Adam with L2 regularization'', ``Adam with decoupled weight decay (AdamW)'' or another variation. Refer to the MLP code, pointing to the specific files and functions to justify your answer}
-}
-
-%% Question 18:
-\newcommand{\questionEighteen} {
-\youranswer{Question 18 - Briefly draw your conclusions based on the results from the previous sections (what are the take-away messages?) and conclude your report with a recommendation for future directions}
+\youranswer{Question 15 - Briefly draw your conclusions based on the results from the previous sections (what are the take-away messages?), discussing them in the context of the overall literature, and conclude your report with a recommendation for future directions}
 }
 
 %% - - - - - - - - - - - - FIGURES - - - - - - - - - - - - 
@@ -177,7 +166,7 @@
         \caption{Accuracy and error by weight penalty.}
         \label{fig:weightrates}
     \end{subfigure} 
-    \caption{Accuracy and error by regularization strength of each method (Dropout and L1/L2 Regularization).}
+    \caption{Accuracy and error by regularisation strength of each method (Dropout and L1/L2 Regularisation).}
     \label{fig:hp_search}
 \end{figure*}
 }
@@ -219,7 +208,7 @@ Question Table 2 - Fill in Table 2 with the results from your experiments varyin
         \# Hidden Layers & Val. Acc. & Train Error & Val. Error \\
     \midrule
          1               &      --.-      &   -.--- & -.---                \\
-         2               &    --.-       &  -.--- & -.---                 \\
+         2               &      --.-      &   -.--- & -.---                \\
          3               &      --.-      &   -.--- & -.---                \\ 
     \bottomrule
     \end{tabular}
@@ -262,7 +251,7 @@ Question Table 3 - Fill in Table 3 with the results from your experiments for th
                  & 5e-2 & 39.2 & 2.258 & 2.256  \\      
     \bottomrule
     \end{tabular}
-    \caption{Results of all hyperparameter search experiments. \emph{italics} indicate the best results per series (Dropout, L1 Regularization, L2 Regularization) and \textbf{bold} indicates the best overall.}
+    \caption{Results of all hyperparameter search experiments. \emph{italics} indicate the best results per series (Dropout, L1 Regularisation, L2 Regularisation) and \textbf{bold} indicates the best overall.}
     \label{tab:hp_search}
 \end{table*}
 }
