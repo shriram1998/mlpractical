@@ -9,11 +9,11 @@ from mlp.layers import DropoutLayer
 from mlp.penalties import L1Penalty, L2Penalty
 parser = argparse.ArgumentParser(description='Welcome to Conv test script')
 
-parser.add_argument('--student_id', nargs="?", type=str, help='Your student id in the format "sxxxxxxx"')
+parser.add_argument('--exam_id', nargs="?", type=str, help='Your exam id in the format "Bxxxxxxx"')
 
 args = parser.parse_args()
 
-student_id = args.student_id
+exam_id = args.exam_id
 
 def fprop_bprop_layer(inputs, dropout_layer, grads_wrt_outputs, weights, params=False):
     if params:
@@ -43,12 +43,12 @@ def call_grad_layer(inputs, penalty_layer, grads_wrt_outputs, weights, params=Fa
 
     return outputs
 
-def get_student_seed(student_id):
-    student_seed_number = int(student_id[1:])
-    return student_seed_number
+def get_exam_seed(exam_id):
+    exam_seed_number = int(exam_id[1:])
+    return exam_seed_number
 
 
-seed = get_student_seed(student_id)
+seed = get_exam_seed(exam_id)
 rng = np.random.RandomState(seed)
 
 reg_output_dict = dict()
