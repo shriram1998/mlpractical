@@ -474,7 +474,7 @@ class CIFAR10(data.Dataset):
         train_sample_idx = rng.choice(a=[i for i in range(50000)], size=47500, replace=False)
         val_sample_idx = [i for i in range(50000) if i not in train_sample_idx]
 
-        if self.set_name is 'train':
+        if self.set_name=='train':
             self.data = []
             self.labels = []
             for fentry in self.train_list:
@@ -501,7 +501,7 @@ class CIFAR10(data.Dataset):
             print(set_name, self.data.shape)
             print(set_name, self.labels.shape)
 
-        elif self.set_name is 'val':
+        elif self.set_name=='val':
             self.data = []
             self.labels = []
             for fentry in self.train_list:

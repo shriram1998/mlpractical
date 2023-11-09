@@ -43,13 +43,13 @@ elif args.dataset_name == 'cifar10':
     ])
 
     trainset = data_providers.CIFAR10(root='data', set_name='train', download=True, transform=transform_train)
-    train_data = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=4)
+    train_data = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=2)
 
     valset = data_providers.CIFAR10(root='data', set_name='val', download=True, transform=transform_test)
-    val_data = torch.utils.data.DataLoader(valset, batch_size=100, shuffle=False, num_workers=4)
+    val_data = torch.utils.data.DataLoader(valset, batch_size=100, shuffle=False, num_workers=2)
 
     testset = data_providers.CIFAR10(root='data', set_name='test', download=True, transform=transform_test)
-    test_data = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=4)
+    test_data = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
 
     classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
     num_output_classes = 10
@@ -69,13 +69,13 @@ elif args.dataset_name == 'cifar100':
     ])
 
     trainset = data_providers.CIFAR100(root='data', set_name='train', download=True, transform=transform_train)
-    train_data = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=4)
+    train_data = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=2)
 
     valset = data_providers.CIFAR100(root='data', set_name='val', download=True, transform=transform_test)
-    val_data = torch.utils.data.DataLoader(valset, batch_size=100, shuffle=False, num_workers=4)
+    val_data = torch.utils.data.DataLoader(valset, batch_size=100, shuffle=False, num_workers=2)
 
     testset = data_providers.CIFAR100(root='data', set_name='test', download=True, transform=transform_test)
-    test_data = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=4)
+    test_data = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
 
     num_output_classes = 100
 

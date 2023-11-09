@@ -1,4 +1,4 @@
-# Environment set up
+# 1. Environment set up
 
 *The instructions below are intentionally verbose as they try to explain the reasoning behind our choice of environment set up and to explain what each command we are asking you to run does. If you are already confident using bash, Conda environments and Git you may wish to instead use the much shorter [minimal set-up instructions](#minimal-set-up-instructions-for-dice) at the end which skip the explanations.*
 
@@ -16,20 +16,21 @@ Conda can handle installation of the Python libraries we will be using and all t
 
 There are several options available for installing Conda on a system. Here we will use the Python 3 version of [Miniconda](http://conda.pydata.org/miniconda.html), which installs just Conda and its dependencies. An alternative is to install the [Anaconda Python distribution](https://docs.continuum.io/anaconda/), which installs Conda and a large selection of popular Python packages. As we will require only a small subset of these packages we will use the more barebones Miniconda to avoid eating into your DICE disk quota too much, however if installing on a personal machine you may wish to consider Anaconda if you want to explore other Python packages.
 
-## Installing Miniconda
+
+## 2. Installing Miniconda
+
 
 We provide instructions here for getting an environment with all the required dependencies running on computers running 
 the School of Informatics [DICE desktop](http://computing.help.inf.ed.ac.uk/dice-platform). The same instructions 
 should be able to used on other Linux distributions such as Ubuntu and Linux Mint with minimal adjustments.
 
 For those wishing to install on a personal Windows or OSX machine, the initial instructions for setting up Conda will 
-differ slightly - you should instead select the relevant installer for your system from [here](http://conda.pydata.org/miniconda.html) and following the corresponding installation instructions from [here](http://conda.pydata.org/docs/install/quick.html). After Conda is installed the [remaining instructions](#creating-the-conda-environment) should be broadly the same across different systems.
+differ slightly - you should instead select the relevant installer for your system from [here](https://docs.conda.io/en/latest/miniconda.html) and following the corresponding installation instructions from [here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html). After Conda is installed the [remaining instructions](#creating-the-conda-environment) should be broadly the same across different systems.
 
 *Note: Although we are happy for you to additionally set up an environment on a personal machine, you should still set up a DICE environment now as this will make sure you are able to use shared computing resources later in the course. Also although we have tried to note when the required commands will differ on non-DICE systems, these instructions have only been tested on DICE and we will not be able to offer any support in labs on getting set up on a non-DICE system.*
 
 ---
-
-Open a bash terminal (`Applications > Terminal` on DICE).
+If you are using ssh connection to the student server, move to the next step. If you are using a DICE computer with graphical user interface, open a bash terminal (`Applications > Terminal` on DICE). 
 
 We first need to download the latest 64-bit Python 3 Miniconda install script:
 
@@ -56,7 +57,14 @@ definition in `.bashrc`. As the DICE bash start-up mechanism differs from the st
 On DICE, append the Miniconda binaries directory to `PATH` in manually in `~/.benv` using
 
 ```
-echo "export PATH=\""\$PATH":$HOME/miniconda3/bin\"" >> ~/.benv
+echo ". /afs/inf.ed.ac.uk/user/${USER:0:3}/$USER/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
+echo ". /afs/inf.ed.ac.uk/user/${USER:0:3}/$USER/miniconda3/etc/profile.d/conda.sh" >> ~/.benv
+```
+
+To avoid any errors later, check both the bashrc and benv files for the correct file path by running : 
+
+```
+vim ~/.bashrc and vim ~/.benv 
 ```
 
 For those who this appears a bit opaque to and want to know what is going on see here <sup id="a1">[1](#f1)</sup>.
@@ -67,9 +75,14 @@ We now need to `source` the updated `~/.benv` so that the `PATH` variable in the
 source ~/.benv
 ```
 
-From the next time you log in all future terminal sessions should have the updated `PATH` loaded by default.
+From the next time you log in all future terminal sessions should have conda readily available via:
 
-## Creating the Conda environment
+```
+conda activate
+```
+
+
+## 3. Creating the Conda environment
 
 You should now have a working Conda installation. If you run
 
@@ -89,7 +102,7 @@ This bootstraps a new Conda environment named `mlp` with a minimal Python 3 inst
 We will now *activate* our created environment:
 
 ```
-source activate mlp
+conda activate mlp
 ```
 
 or on Windows only
@@ -100,7 +113,7 @@ activate mlp
 
 When a environment is activated its name will be prepended on to the prompt which should now look something like `(mlp) [machine-name]:~$` on DICE.
 
-**You need to run this `source activate mlp` command every time you wish to activate the `mlp` environment in a terminal (for example at the beginning of each lab)**. When the environment is activated, the environment will be searched first when running commands so that e.g. `python` will launch the Python interpreter installed locally in the `mlp` environment rather than a system-wide version.
+**You need to run this `conda activate mlp` command every time you wish to activate the `mlp` environment in a terminal (for example at the beginning of each lab)**. When the environment is activated, the environment will be searched first when running commands so that e.g. `python` will launch the Python interpreter installed locally in the `mlp` environment rather than a system-wide version.
 
 If you wish to deactivate an environment loaded in the current terminal e.g. to launch the system Python interpreter, you can run `source deactivate` (just `deactivate` on Windows).
 
@@ -112,6 +125,12 @@ conda install numpy scipy matplotlib jupyter
 
 Again you will be given a list of the packages to be installed and asked to confirm whether to proceed. Enter `y` then wait for the packages to install (this should take around five minutes). In addition to Jupyter, NumPy and SciPy which we have already mentioned, we are also installing [matplotlib](http://matplotlib.org/) a plotting and visualisation library.
 
+Install PyTorch. The command below installs the CPU-only version of PyTorch. If you have access to a CUDA-enabled GPU and wish to install the GPU version of PyTorch instead, replace `cpuonly -c pytorch` with your CUDA version reference, e.g. for CUDA 11.7 use `pytorch-cuda=11.7 -c pytorch -c nvidia` in the command below. For more information see [here](https://pytorch.org/get-started/locally/).
+
+```
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
+```
+
 Once the installation is finished, to recover some disk space we can clear the package tarballs Conda just downloaded:
 
 ```
@@ -120,11 +139,25 @@ conda clean -t
 
 These tarballs are usually cached to allow quicker installation into additional environments however we will only be using a single environment here so there is no need to keep them on disk.
 
-## Getting the course code and a short introduction to Git
+***ANLP and IAML students only:***
+To have normal access to your ANLP and IAML environments please do the following:
+1. ```nano .condarc```
+2. Add the following lines in the file:
+```
+envs_dirs:
+ - /group/teaching/conda/envs
+
+pkgs_dirs:
+ - /group/teaching/conda/pkgs
+ - ~/miniconda3/pkgs
+```
+3. Exit by using control + x and then choosing 'yes' at the exit prompt.
+
+## 4. Getting the course code and a short introduction to Git
 
 The next step in getting our environment set up will be to download the course code. This is available in a Git repository on Github:
 
-https://github.com/CSTR-Edinburgh/mlpractical
+https://github.com/VICO-UoE/mlpractical
 
 [Git](https://git-scm.com/) is a distributed version control system and [Github](https://github.com) a popular site for hosting Git repositories. We will be using Git to distribute the code for all the labs and assignments. We will explain all the necessary `git` commands as we go, though those new to Git may find [this concise guide by Roger Dudler](http://rogerdudler.github.io/git-guide/) or [this slightly longer one from Atlassian](https://www.atlassian.com/git/tutorials/) useful.
 
@@ -145,7 +178,7 @@ We will now go over the process of [cloning](https://www.atlassian.com/git/tutor
 ---
 **Confident Git users only:**
 
-For those who have their own Github account and are confident Git users, you may wish to consider instead [creating a private fork](http://stackoverflow.com/a/30352360) of the `CSTR-Edinburgh/mlpractical` repository on Github. This is not required for the course, however it will allow you to push your local commits to Github making it easier to for example sync your work between DICE computers and a personal machine.
+For those who have their own Github account and are confident Git users, you may wish to consider instead [creating a private fork](http://stackoverflow.com/a/30352360) of the `VICO-UoE/mlpractical` repository on Github. This is not required for the course, however it will allow you to push your local commits to Github making it easier to for example sync your work between DICE computers and a personal machine.
 
 **Note you should NOT create a public fork using the default forking mechanism on Github as this will make any commits you push to the fork publicly available which creates a risk of plagiarism.**
 
@@ -159,7 +192,7 @@ By default we will assume here you are cloning to your home directory however if
 To clone the `mlpractical` repository to the home directory run
 
 ```
-git clone https://github.com/CSTR-Edinburgh/mlpractical.git ~/mlpractical
+git clone https://github.com/VICO-UoE/mlpractical.git ~/mlpractical
 ```
 
 This will create a new `mlpractical` subdirectory with a local copy of the repository in it. Enter the directory and list all its contents, including hidden files, by running:
@@ -246,10 +279,10 @@ This will change the code in the working directory to the current state of the c
 You should make sure you are on the first lab branch now by running:
 
 ```
-git checkout mlp2017-8/lab1
+git checkout mlp2023-24/lab1
 ```
 
-## Installing the `mlp` Python package
+## 6. Installing the `mlp` Python package
 
 In your local repository we noted above the presence of a `mlp` subdirectory. This contains the custom Python package implementing the NumPy based neural network framework we will be using in this course.
 
@@ -275,10 +308,11 @@ Note that after the first time a Python module is loaded into an interpreter ins
 import mlp
 ```
 
-Running the `import` statement any further times will have no effect even if the underlying module code has been changed. To reload an already imported module we instead need to use the [`reload`](https://docs.python.org/2.7/library/functions.html#reload) function, e.g.
+Running the `import` statement any further times will have no effect even if the underlying module code has been changed. To reload an already imported module we instead need to use the [`importlib.reload`](https://docs.python.org/3/library/importlib.html#importlib.reload) function, e.g.
 
 ```
-reload(mlp)
+import importlib
+importlib.reload(mlp)
 ```
 
 **Note: To be clear as this has caused some confusion in previous labs the above `import ...` / `reload(...)` statements should NOT be run directly in a bash terminal. They are examples Python statements - you could run them in a terminal by first loading a Python interpreter using:**
@@ -291,7 +325,7 @@ python
 
 ---
 
-## Adding a data directory variable to the environment
+## 7. Adding a data directory variable to the environment
 
 We observed previously the presence of a `data` subdirectory in the local repository. This directory holds the data files that will be used in the course. To enable the data loaders in the `mlp` package to locate these data files we need to set a `MLP_DATA_DIR` environment variable pointing to this directory.
 
@@ -319,7 +353,7 @@ mkdir .\etc\conda\deactivate.d
 set MLP_DATA_DIR=[path-to-local-repository]\data
 ```
 
-## Loading the first lab notebook
+## 8. Loading the first lab notebook
 
 Your environment is now all set up so you can move on to the introductory exercises in the first lab notebook.
 
@@ -343,7 +377,7 @@ Below are instructions for setting up the environment without additional explana
 
 ---
 
-Start a new bash terminal. Download the latest 64-bit Python 2.7 Miniconda install script:
+Start a new bash terminal. Download the latest 64-bit Python 3.9 Miniconda install script:
 
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -361,7 +395,8 @@ You will then be asked whether to prepend the Miniconda binaries directory to th
 
 Append the Miniconda binaries directory to `PATH` in manually in `~/.benv`:
 ```
-echo "export PATH=\""\$PATH":$HOME/miniconda3/bin\"" >> ~/.benv
+echo ". /afs/inf.ed.ac.uk/user/${USER:0:3}/$USER/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
+echo ". /afs/inf.ed.ac.uk/user/${USER:0:3}/$USER/miniconda3/etc/profile.d/conda.sh" >> ~/.benv
 ```
 
 `source` the updated `~/.benv`:
@@ -379,13 +414,19 @@ conda create -n mlp python=3
 Activate our created environment:
 
 ```
-source activate mlp
+conda activate mlp
 ```
 
 Install the dependencies for the course into the new environment:
 
 ```
 conda install numpy scipy matplotlib jupyter
+```
+
+Install PyTorch. The command below installs the CPU-only version of PyTorch. If you have access to a CUDA-enabled GPU and wish to install the GPU version of PyTorch instead, replace `cpuonly -c pytorch` with your CUDA version reference, e.g. for CUDA 11.7 use `pytorch-cuda=11.7 -c pytorch -c nvidia` in the command below. For more information see [here](https://pytorch.org/get-started/locally/).
+
+```
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
 ```
 
 Clear the package tarballs Conda just downloaded:
@@ -397,14 +438,14 @@ conda clean -t
 Clone the course repository to your home directory:
 
 ```
-git clone https://github.com/CSTR-Edinburgh/mlpractical.git ~/mlpractical
+git clone https://github.com/VICO-UoE/mlpractical.git ~/mlpractical
 ```
 
 Make sure we are on the first lab branch
 
 ```
 cd ~/mlpractical
-git checkout mlp2017-8/lab1
+git checkout mlp2023-24/lab1
 ```
 
 Install the `mlp` package in the environment in develop mode

@@ -1,21 +1,9 @@
-# MLP GPU Cluster Quick-Start Guide
+# MLP GPU Cluster Usage Tutorial
 
 This guide is intended to guide students into the basics of using the charles GPU cluster. It is not intended to be
 an exhaustive guide that goes deep into micro-details of the Slurm ecosystem. For an exhaustive guide please visit 
 [the Slurm Documentation page.](https://slurm.schedmd.com/)
 
-## What is the MLP GPU Cluster?
-It's a cluster consisting of server rack machines, each equipped with 8 x NVIDIA 1060 Ti GTX GPUs. Currently there are 200 GPUs available for use. The system is managed using the open source cluster management software named
- [Slurm](https://slurm.schedmd.com/overview.html). Slurm has various advantages over the competition, including full 
- support of GPU resource scheduling.
- 
-## Why do I need it?
-Most Deep Learning experiments require a large amount of compute as you have noticed in term 1. Usage of GPU can 
-accelerate experiments around 30-50x therefore making experiments that require a large amount of time feasible by 
-slashing their runtimes down by a massive factor. For a simple example consider an experiment that required a month to 
-run, that would make it infeasible to actually do research with. Now consider that experiment only requiring 1 day to 
-run, which allows one to iterate over methodologies, tune hyperparameters and overall try far more things. This simple
-example expresses one of the simplest reasons behind the GPU hype that surrounds machine learning research today.
 
 ##### For info on clusters and some tips on good cluster ettiquete please have a look at the complementary lecture slides https://docs.google.com/presentation/d/1SU4ExARZLbenZtxm3K8Unqch5282jAXTq0CQDtfvtI0/edit?usp=sharing
 
@@ -32,19 +20,19 @@ example expresses one of the simplest reasons behind the GPU hype that surrounds
 1. Start by downloading the miniconda3 installation file using 
  ```wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh```.
 2. Now run the installation using ```bash Miniconda3-latest-Linux-x86_64.sh```. At the first prompt reply yes. 
-```
-Do you accept the license terms? [yes|no]
-[no] >>> yes
-```
+    ```
+    Do you accept the license terms? [yes|no]
+    [no] >>> yes
+    ```
 3. At the second prompt simply press enter.
-```
-Miniconda3 will now be installed into this location:
-/home/sxxxxxxx/miniconda3
-
-  - Press ENTER to confirm the location
-  - Press CTRL-C to abort the installation
-  - Or specify a different location below
-```
+    ```
+    Miniconda3 will now be installed into this location:
+    /home/sxxxxxxx/miniconda3
+    
+      - Press ENTER to confirm the location
+      - Press CTRL-C to abort the installation
+      - Or specify a different location below
+    ```
 4. Now you need to activate your environment by first running:
 ```source .bashrc```.
 This reloads .bashrc which includes the new miniconda path.
@@ -55,7 +43,7 @@ This reloads .bashrc which includes the new miniconda path.
 ```git config --global user.name "[your name]"; git config --global user.email "[matric-number]@sms.ed.ac.uk"```
 9. Now clone the mlpractical repo using ```git clone https://github.com/VICO-UoE/mlpractical.git```.
 10. ```cd mlpractical```
-11. Checkout the mlp_cluster_tutorial branch using ```git checkout mlp2021-22/mlp_cluster_tutorial```.
+11. Checkout the mlp_cluster_tutorial branch using ```git checkout mlp2023-24/mlp_compute_engines```.
 12. Install the required packages using ```bash install.sh```.
 13. This includes all of the required installations. Proceed to the next section outlining how to use the slurm cluster
  management software. Please remember to clean your setup files using ```conda clean -t```
@@ -137,6 +125,21 @@ At some point you will need to copy your data to DICE so you can analyse them an
     1. To send data from a local machine to the cluster: ```rsync -ua --progress <local_path_of_data_to_transfer> <studentID>@mlp.inf.ed.ac.uk:/home/<studentID>/path/to/folder```
     2. To receive data from the cluster to your local machine ```rsync -ua --progress <studentID>@mlp.inf.ed.ac.uk:/home/<studentID>/path/to/folder <local_path_of_data_to_transfer> ```
 
+## Running an experiment
+To run a default image classification experiment using the template models provided:
+1. Sign into the cluster using ssh sxxxxxxx@mlp1.inf.ed.ac.uk
+2. Activate your conda environment using, source miniconda3/bin/activate ; conda activate mlp
+3. cd mlpractical
+4. cd cluster_experiment_scripts
+5. Find which experiment(s) you want to run (make sure the experiment ends in 'gpu_cluster.sh'). Decide if you want to run a single experiment or multiple experiments in parallel.
+    1. For a single experiment: ```sbatch experiment_script.sh```
+    2. To run multiple experiments using the "hurdle-reducing" script that automatically submits jobs, makes sure the jobs are always in queue/running:
+        1. Make sure the cluster_experiment_scripts folder contains ***only*** the jobs you want to run. 
+        2. Run the command: 
+        ```
+        python run_jobs.py --num_parallel_jobs <number of jobs to keep in the slurm queue at all times> --num_epochs <number of epochs to run each job>
+        ```
+
 ## Additional Help
 
 If you require additional help please post on piazza or if you are experiencing technical problems (actual system/hardware problems) then please submit a [computing support ticket](https://www.inf.ed.ac.uk/systems/support/form/).
@@ -150,3 +153,15 @@ If you require additional help please post on piazza or if you are experiencing 
 - scancel -u <user_id>: Cancels all jobs, belonging to user <user_id>, that are currently in the queue/running
 - sinfo: Provides info about the cluster/partitions
 - sbatch <job_script>: Submit a job that will run the script <job_script> to the slurm scheduler.
+
+## Overview of code:
+- [arg_extractor.py](arg_extractor.py): Contains an array of utility methods that can parse python arguments or convert
+ a json config file into an argument NamedTuple.
+- [data_providers.py](data_providers.py): A sample data provider, of the same type used in the MLPractical course.
+- [experiment_builder.py](experiment_builder.py): Builds and executes a simple image classification experiment, keeping track
+of relevant statistics, taking care of storing and re-loading pytorch models, as well as choosing the best validation-performing model to evaluate the test set on.
+- [model_architectures.py](model_architectures.py): Provides a fully connected network and convolutional neural network 
+sample models, which have a number of moving parts indicated as hyperparameters.
+- [storage_utils.py](storage_utils.py): Provides a number of storage/loading methods for the experiment statistics.
+- [train_evaluated_emnist_classification_system.py](train_evaluate_emnist_classification_system.py): Runs an experiment 
+given a data provider, an experiment builder instance and a model architecture
