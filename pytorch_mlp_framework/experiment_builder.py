@@ -155,18 +155,15 @@ class ExperimentBuilder(nn.Module):
         """
         ########################################
         for name, param in named_parameters:
-            if param.grad is not None and name!='logit_linear_layer.bias':
-                #get first part of the parameter name which is the name of the layer
+            if param.grad is not None:
                 split=name.split('.')
-                filtered_split=[i for i in split if i!='layer_dict']
-                layer_name='_'.join(filtered_split[:-1])
-                if layer_name not in layers:
+                #skip the bias gradients of layers and store weight gradients
+                if split[-1]!='bias':
+                    #remove the dictionary names to get correct layer names
+                    filtered_split=[i for i in split if i!='layer_dict']
+                    layer_name='_'.join(filtered_split[:-1]) #remove redundant weight term from layer name
                     layers.append(layer_name)
                     all_grads.append(param.grad.abs().mean().item())
-                else:
-                    #accumulate gradients if layer contains multiple parameters, for instance weights and biases
-                    index=layers.index(layer_name)
-                    all_grads[index]+=param.grad.abs().mean().item()
         ########################################
             
         
