@@ -14,7 +14,7 @@ matplotlib.rcParams.update({'font.size': 8})
 
 class ExperimentBuilder(nn.Module):
     def __init__(self, network_model, experiment_name, num_epochs, train_data, val_data,
-                 test_data, weight_decay_coefficient, use_gpu, continue_from_epoch=-1):
+                 test_data, weight_decay_coefficient, use_gpu, learning_rate, continue_from_epoch=-1):
         """
         Initializes an ExperimentBuilder object. Such an object takes care of running training and evaluation of a deep net
         on a given dataset. It also takes care of saving per epoch models and automatically inferring the best val model
@@ -27,6 +27,7 @@ class ExperimentBuilder(nn.Module):
         :param test_data: An object of the DataProvider type. Contains the test set.
         :param weight_decay_coefficient: A float indicating the weight decay to use with the adam optimizer.
         :param use_gpu: A boolean indicating whether to use a GPU or not.
+        :param learning_rate: Learning rate of the optimizer
         :param continue_from_epoch: An int indicating whether we'll start from scrach (-1) or whether we'll reload a previously saved model of epoch 'continue_from_epoch' and continue training from there.
         """
         super(ExperimentBuilder, self).__init__()
@@ -72,7 +73,7 @@ class ExperimentBuilder(nn.Module):
         print('Total number of conv layers', num_conv_layers)
         print('Total number of linear layers', num_linear_layers)
 
-        self.optimizer = optim.Adam(self.parameters(), amsgrad=False,
+        self.optimizer = optim.Adam(self.parameters(),lr=learning_rate, amsgrad=False,
                                     weight_decay=weight_decay_coefficient)
         self.learning_rate_scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer,
                                                                             T_max=num_epochs,
@@ -187,8 +188,8 @@ class ExperimentBuilder(nn.Module):
         self.optimizer.zero_grad()  # set all weight grads from previous training iters to 0
         loss.backward()  # backpropagate to compute gradients for current iter loss
         
-        self.learning_rate_scheduler.step(epoch=self.current_epoch)
         self.optimizer.step()  # update network parameters
+        self.learning_rate_scheduler.step()
         _, predicted = torch.max(out.data, 1)  # get argmax of predictions
         accuracy = np.mean(list(predicted.eq(y.data).cpu()))  # compute accuracy
         return loss.cpu().data.numpy(), accuracy
