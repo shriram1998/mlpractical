@@ -50,6 +50,9 @@ elif args.block_type == 'empty_block':
 elif args.block_type == 'conv_block_bn':
     processing_block_type = ConvolutionalProcessingBlockBN
     dim_reduction_block_type = ConvolutionalDimensionalityReductionBlockBN
+elif args.block_type == 'conv_block_rc':
+    processing_block_type = ConvolutionalProcessingBlockRC
+    dim_reduction_block_type = ConvolutionalDimensionalityReductionBlock
 elif args.block_type == 'conv_block_bn_rc':
     processing_block_type = ConvolutionalProcessingBlockBNRC
     dim_reduction_block_type = ConvolutionalDimensionalityReductionBlockBN
