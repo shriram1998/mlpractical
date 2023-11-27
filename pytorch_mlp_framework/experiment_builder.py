@@ -69,10 +69,12 @@ class ExperimentBuilder(nn.Module):
                 num_linear_layers += 1
             total_num_parameters += np.prod(value.shape)
 
+        print('Before LR')
+        print('Learning rate of optimizer', learning_rate)
+        print('After LR')
         print('Total number of parameters', total_num_parameters)
         print('Total number of conv layers', num_conv_layers)
         print('Total number of linear layers', num_linear_layers)
-
         self.optimizer = optim.Adam(self.parameters(),lr=learning_rate, amsgrad=False,
                                     weight_decay=weight_decay_coefficient)
         self.learning_rate_scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer,
