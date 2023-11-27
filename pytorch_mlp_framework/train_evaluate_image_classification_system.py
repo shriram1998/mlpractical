@@ -77,5 +77,4 @@ conv_experiment = ExperimentBuilder(network_model=custom_conv_net,
                                     learning_rate=args.learning_rate
                                     )  # build an experiment object
 
-if __name__=='__main__':
-    experiment_metrics, test_metrics = conv_experiment.run_experiment()  # run experiment and return experiment metrics
+experiment_metrics, test_metrics = conv_experiment.run_experiment()  # run experiment and return experiment metrics
