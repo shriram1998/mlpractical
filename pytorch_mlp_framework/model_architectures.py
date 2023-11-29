@@ -488,7 +488,7 @@ class ConvolutionalProcessingBlockBNRC(nn.Module):
         out = self.layer_dict['conv_1'].forward(out)
         self.layer_dict['bn_1'] = nn.BatchNorm2d(out.shape[1])
         out = self.layer_dict['bn_1'].forward(out)
-        out = torch.add(out,x_shortcut)
+        out += x_shortcut
         out = F.leaky_relu(out)
 
         print(out.shape)
@@ -502,7 +502,7 @@ class ConvolutionalProcessingBlockBNRC(nn.Module):
 
         out = self.layer_dict['conv_1'].forward(out)
         out = self.layer_dict['bn_1'].forward(out)
-        out = torch.add(out,x_shortcut)
+        out += x_shortcut
         out = F.leaky_relu(out)
 
         return out
@@ -540,7 +540,7 @@ class ConvolutionalProcessingBlockRC(nn.Module):
                                               padding=self.padding, stride=1)
 
         out = self.layer_dict['conv_1'].forward(out)
-        out = torch.add(out,x_shortcut)
+        out += x_shortcut
         out = F.leaky_relu(out)
 
         print(out.shape)
@@ -552,7 +552,7 @@ class ConvolutionalProcessingBlockRC(nn.Module):
         out = F.leaky_relu(out)
 
         out = self.layer_dict['conv_1'].forward(out)
-        out = torch.add(out,x_shortcut)
+        out += x_shortcut
         out = F.leaky_relu(out)
 
         return out
